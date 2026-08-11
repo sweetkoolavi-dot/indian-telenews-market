@@ -1,18 +1,14 @@
-# Telegram Market Intelligence Terminal — V2
+# Market Pulse Terminal V3
 
-This Streamlit app converts the public Telegram channel `@share_market_news_livee` into structured market events.
+A Streamlit market-news intelligence dashboard for Indian equities.
 
-## What V2 fixes
-The first version could treat a long Telegram results digest as one huge message. V2 preserves Telegram line breaks and also splits long digest messages before `Company Name #Ticker` markers. Each extracted event is then scored/classified separately.
-
-## Main views
-- **Action Board** — highest-impact individual events with a plain-English “what matters” takeaway.
-- **Results Radar** — extracts Revenue / EBITDA / PBT / PAT and approximate comparison % where the Telegram text uses `current vs previous` figures.
-- **Catalysts** — order wins, regulatory events, M&A, fund raising, management/promoter/corporate actions.
-- **Stock News Score** — ranks stocks/companies by repeated positive/negative catalysts and max impact.
-- **Sector Pulse** — sector-level news bias.
-- **Watchlist** — only events that match your stocks/company keywords.
-- **Raw Events** — the decomposed event stream for debugging/verification.
+## What changed in V3
+- Feed source is entirely background-only; no source branding or source links appear in the UI.
+- Company/ticker-first event cards.
+- Latest stock price and 1-session % change via Yahoo Finance/yfinance.
+- Optional AI extraction for dense multi-company result/news digests.
+- Results surprise board, catalyst radar, sector pressure, watchlist and ranked news stocks.
+- Direct TradingView chart button.
 
 ## Run locally
 ```bash
@@ -20,14 +16,14 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## Environment variables (optional)
-```text
-TELEGRAM_CHANNEL=share_market_news_livee
-REFRESH_SECONDS=45
-DEFAULT_WATCHLIST=BEL,HAL,RELIANCE,TATAPOWER,PIDILITIND
+## Enable AI parsing on Streamlit Community Cloud
+Open your app -> Manage app -> Settings -> Secrets and add:
+```toml
+OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
+OPENAI_MODEL = "gpt-4.1-mini"
 ```
+Then reboot the app. If no API key is supplied, V3 automatically uses the built-in deterministic parser.
 
-## Important limitation
-The public Telegram web preview is convenient but not a guaranteed API. For a production terminal, use a Telegram user-client connector (for example Telethon) and keep `api_id` / `api_hash` in Streamlit secrets or environment variables, never in GitHub.
-
-The classification and financial metric extraction are heuristic. Treat Telegram as the discovery/speed layer and verify price-sensitive information from NSE/BSE/company filings before acting.
+## GitHub replacement
+Upload/replace `app.py`, `requirements.txt`, `.gitignore`, `README.md`, and optionally `.streamlit/secrets.toml.example`.
+Do not upload an actual `secrets.toml` containing your API key.
